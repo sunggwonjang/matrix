@@ -8,6 +8,7 @@ gcc -o matrix matrix.c
 
 ### How to use
 matrix
+
 matrix ABC.TXT
 
 
