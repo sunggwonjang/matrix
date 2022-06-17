@@ -5,6 +5,7 @@
 #include <string.h>
 #include <wchar.h>
 #include <locale.h>
+#include <signal.h>
 
 
 #define CSI					"\x1b["
@@ -47,7 +48,14 @@ typedef struct
 Position Window;
 wchar_t samples[MAX_SAMPLES][MAX_WORDLEN + 1];
 int nSampleCount;
+int ChangedWindow;
 
+
+// Terminal change signal
+void sigWinChanged (int nSignal)
+{
+	ChangedWindow = 1;
+}
 
 // change stdin to nonblock mode.
 void SetInputMode (void)
@@ -161,14 +169,19 @@ int main (int argc, char* argv[])
 {
 	int i, j, x, make, nearX;
 	Word items [MAX_ITEMS];
+    static struct sigaction act;
+
+	act.sa_handler = sigWinChanged;
+    sigaction (SIGWINCH, &act, NULL);
 
 	setlocale (LC_CTYPE, "en_US.utf8");
 	memset (items, 0x0, sizeof (items));
+	srandom (0);
+	SetInputMode();
 
 	nSampleCount = 0;
 	if (argc > 1)
 		nSampleCount = ReadSamples (argv[1]);
-
 	if (nSampleCount == 0)
 	{
 		wcscpy (samples[0], L"Hello world ");
@@ -177,13 +190,17 @@ int main (int argc, char* argv[])
 		nSampleCount = 3;
 	}
 
-	GetWindowSize();
-	SetInputMode();
-	srandom (0);
-
-	fputs (ANSI_ClearScreen, stdout);
+	ChangedWindow = 1;
 	while (1)
 	{
+		// check window
+		if (ChangedWindow == 1)
+		{
+			ChangedWindow = 0;
+			GetWindowSize();
+			fputs (ANSI_ClearScreen, stdout);
+		}
+
 		// Create new items
 		make = 0;
 		for (i = 0; i < MAX_ITEMS; i++)
