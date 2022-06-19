@@ -2,21 +2,24 @@
 Linux Terminal Matrix Program
 
 
-### Compile
+#### Compile
+```
 gcc -o matrix matrix.c
+```
 
 
-### How to use
+#### How to use
+```
 matrix
-
 matrix ABC.TXT
+```
 
 
-### ABC.TXT (Text file)
+#### ABC.TXT (Text file)
+```
 Matrix World
-
 You don't know who i am
-
 Thanks
-
 😀☺️😍😝😎👍
+Github is very good
+```
