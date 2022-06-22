@@ -6,6 +6,7 @@
 #include <wchar.h>
 #include <locale.h>
 #include <signal.h>
+#include <sys/ioctl.h>
 
 
 #define CSI					"\x1b["
@@ -45,7 +46,7 @@ typedef struct
 } Word;
 
 
-Position Window;
+struct winsize Window;
 wchar_t samples[MAX_SAMPLES][MAX_WORDLEN + 1];
 int nSampleCount;
 int ChangedWindow;
@@ -82,14 +83,7 @@ int InputHasEnter (void)
 // get current terminal size
 int GetWindowSize (void)
 {
-	FILE *fp = popen ("stty size", "r");
-	if (fp != NULL)
-	{
-		fscanf (fp, "%d %d", &Window.y, &Window.x);
-		pclose (fp);
-		return 1;
-	}
-	return 0;
+	return ioctl (STDIN_FILENO, TIOCGWINSZ, &Window);
 }
 
 // display item
@@ -102,7 +96,7 @@ int DisplayWord (const Word* pWord)
 	for (i = 0; i < len; i++)
 	{
 		y = pWord->pos.y - i;
-		if (y > 0 && y <= Window.y && pWord->pos.x <= Window.x) 
+		if (y > 0 && y <= Window.ws_row && pWord->pos.x <= Window.ws_col) 
 		{
 			fprintf (stdout, ANSI_GotoYX "%lc", y, pWord->pos.x, pWord->text[i]);
 			count++;
@@ -209,7 +203,7 @@ int main (int argc, char* argv[])
 			{
 				if (random() % 5 == 0)
 				{
-					x = random () % (Window.x - 1);
+					x = random () % (Window.ws_col - 1);
 					x++;
 					nearX = 0;
 
