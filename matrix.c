@@ -10,24 +10,24 @@
 #include <termios.h>
 
 
-#define CSI                                     "\x1b["
+#define CSI                     "\x1b["
 #define ANSI_ClearScreen        CSI "2J"
-#define ANSI_GotoYX                     CSI "%d;%dH"
+#define ANSI_GotoYX             CSI "%d;%dH"
 
 #define ANSI_DEFAULT            CSI "0m"
-#define ANSI_BLACK                      CSI "0;30m"
-#define ANSI_RED                        CSI "0;31m"
-#define ANSI_GREEN                      CSI "0;32m"
-#define ANSI_YELLOW                     CSI "0;33m"
-#define ANSI_BLUE                       CSI "0;34m"
+#define ANSI_BLACK              CSI "0;30m"
+#define ANSI_RED                CSI "0;31m"
+#define ANSI_GREEN              CSI "0;32m"
+#define ANSI_YELLOW             CSI "0;33m"
+#define ANSI_BLUE               CSI "0;34m"
 #define ANSI_MAGENTA            CSI "0;35m"
-#define ANSI_CYAN                       CSI "0;36m"
-#define ANSI_WHITE                      CSI "0;37m"
+#define ANSI_CYAN               CSI "0;36m"
+#define ANSI_WHITE              CSI "0;37m"
 
-#define MAX_ITEMS                       30
-#define MAX_SLOW                        15
-#define MAX_WORDLEN                     80
-#define MAX_SAMPLES                     80
+#define MAX_ITEMS               30
+#define MAX_SLOW                15
+#define MAX_WORDLEN             80
+#define MAX_SAMPLES             80
 
 
 typedef struct
@@ -197,12 +197,12 @@ int main (int argc, char* argv[])
 {
         int i, j, x, make, nearX;
         Word items [MAX_ITEMS];
-    static struct sigaction act;
+        static struct sigaction act;
 
         act.sa_handler = sigWinChanged;
-    sigaction (SIGWINCH, &act, NULL);
+        sigaction (SIGWINCH, &act, NULL);
 
-        setlocale (LC_CTYPE, "en_US.utf8");
+        setlocale (LC_CTYPE, getenv ("LANG"));
         memset (items, 0x0, sizeof (items));
         srandom (0);
 
