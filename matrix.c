@@ -26,13 +26,13 @@
 
 #define MAX_ITEMS               30
 #define MAX_SLOW                15
-#define MAX_WORDLEN             80
-#define MAX_SAMPLES             80
+#define MAX_WORDLEN             200
+#define MAX_SAMPLES             1000
 
 
 typedef struct
 {
-        int     x;
+        int x;
         int y;
 } Position;
 
